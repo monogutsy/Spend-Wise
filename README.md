@@ -16,7 +16,7 @@ Track expenses • Manage budgets • Monitor savings goals • Stay financially
   <a href="https://spend-wise-nine-amber.vercel.app/">
     <img src="https://img.shields.io/badge/🚀_Live_Demo-2563EB?style=for-the-badge" />
   </a>
-  <a href="https://github.com/YOUR_USERNAME/Spend-Wise">
+  <a href="https://github.com/monogutsy/Spend-Wise">
     <img src="https://img.shields.io/badge/📦_Repository-181717?style=for-the-badge&logo=github&logoColor=white" />
   </a>
 </p>
