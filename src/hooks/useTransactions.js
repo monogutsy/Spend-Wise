@@ -16,11 +16,13 @@ export function useTransactions() {
   const totalExpenses = useSelector(selectTotalExpenses);
 
   function createTransaction(payload) {
+    const normalizedTitle = payload.title?.trim();
+    const normalizedCategory =
+      payload.category?.trim() || "Uncategorized";
     const parsedAmount = Number(payload.amount);
 
     if (
-      !payload.title ||
-      !payload.category ||
+      !normalizedTitle ||
       !Number.isFinite(parsedAmount) ||
       parsedAmount <= 0
     ) {
@@ -30,8 +32,8 @@ export function useTransactions() {
     dispatch(
       addTransaction({
         id: uuid(),
-        title: payload.title.trim(),
-        category: payload.category,
+        title: normalizedTitle,
+        category: normalizedCategory,
         amount: parsedAmount,
         date:
           payload.date ||

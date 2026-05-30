@@ -17,8 +17,8 @@ function CurrencyCard() {
         return;
       }
 
-      if (!data?.rates) {
-        setError("Rates unavailable");
+      if (data?.error || !data?.rates) {
+        setError(data?.error || "Rates unavailable");
         return;
       }
 

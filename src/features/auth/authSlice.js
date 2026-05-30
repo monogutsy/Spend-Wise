@@ -28,6 +28,12 @@ function handleAuthError(error, rejectWithValue) {
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (payload, { rejectWithValue }) => {
+    if (!isFirebaseConfigured) {
+      return rejectWithValue(
+        "Firebase auth is disabled. Configure VITE_FIREBASE_* variables to enable sign in."
+      );
+    }
+
     try {
       return await registerWithEmail(payload);
     } catch (error) {
@@ -39,6 +45,12 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (payload, { rejectWithValue }) => {
+    if (!isFirebaseConfigured) {
+      return rejectWithValue(
+        "Firebase auth is disabled. Configure VITE_FIREBASE_* variables to enable sign in."
+      );
+    }
+
     try {
       return await loginWithEmail(payload);
     } catch (error) {
@@ -50,6 +62,12 @@ export const loginUser = createAsyncThunk(
 export const loginWithGoogleProvider = createAsyncThunk(
   "auth/loginWithGoogleProvider",
   async (_, { rejectWithValue }) => {
+    if (!isFirebaseConfigured) {
+      return rejectWithValue(
+        "Firebase auth is disabled. Configure VITE_FIREBASE_* variables to enable sign in."
+      );
+    }
+
     try {
       return await loginWithGoogle();
     } catch (error) {
@@ -61,6 +79,10 @@ export const loginWithGoogleProvider = createAsyncThunk(
 export const logoutCurrentUser = createAsyncThunk(
   "auth/logoutCurrentUser",
   async (_, { rejectWithValue }) => {
+    if (!isFirebaseConfigured) {
+      return null;
+    }
+
     try {
       await logoutUser();
     } catch (error) {

@@ -15,10 +15,16 @@ import {
 const CONFIG_ERROR_MESSAGE =
   "Firebase is not configured. Add VITE_FIREBASE_* values to your environment.";
 
-function assertFirebaseConfigured() {
-  if (!isFirebaseConfigured) {
-    throw new Error(CONFIG_ERROR_MESSAGE);
+function createConfigError() {
+  return new Error(CONFIG_ERROR_MESSAGE);
+}
+
+function ensureFirebaseConfigured() {
+  if (!isFirebaseConfigured || !auth) {
+    return false;
   }
+
+  return true;
 }
 
 export function mapFirebaseUser(user) {
@@ -38,7 +44,9 @@ export async function registerWithEmail({
   email,
   password,
 }) {
-  assertFirebaseConfigured();
+  if (!ensureFirebaseConfigured()) {
+    return Promise.reject(createConfigError());
+  }
 
   const credentials =
     await createUserWithEmailAndPassword(
@@ -54,7 +62,9 @@ export async function loginWithEmail({
   email,
   password,
 }) {
-  assertFirebaseConfigured();
+  if (!ensureFirebaseConfigured()) {
+    return Promise.reject(createConfigError());
+  }
 
   const credentials =
     await signInWithEmailAndPassword(
@@ -67,7 +77,12 @@ export async function loginWithEmail({
 }
 
 export async function loginWithGoogle() {
-  assertFirebaseConfigured();
+  if (
+    !ensureFirebaseConfigured() ||
+    !googleProvider
+  ) {
+    return Promise.reject(createConfigError());
+  }
 
   const credentials = await signInWithPopup(
     auth,
@@ -78,7 +93,9 @@ export async function loginWithGoogle() {
 }
 
 export async function logoutUser() {
-  assertFirebaseConfigured();
+  if (!ensureFirebaseConfigured()) {
+    return;
+  }
   await signOut(auth);
 }
 

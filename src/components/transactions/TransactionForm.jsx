@@ -1,16 +1,28 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function TransactionForm({
   categories,
   onSubmit,
 }) {
+  const availableCategories = useMemo(
+    () =>
+      categories.length > 0
+        ? categories
+        : ["Uncategorized"],
+    [categories]
+  );
+
   const [form, setForm] = useState({
     title: "",
-    category: categories[0] || "",
+    category: availableCategories[0],
     amount: "",
     date: new Date().toISOString().slice(0, 10),
   });
   const [error, setError] = useState("");
+  const selectedCategory =
+    availableCategories.includes(form.category)
+      ? form.category
+      : availableCategories[0];
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -23,7 +35,10 @@ function TransactionForm({
   function handleSubmit(event) {
     event.preventDefault();
 
-    const didCreate = onSubmit(form);
+    const didCreate = onSubmit({
+      ...form,
+      category: selectedCategory,
+    });
 
     if (!didCreate) {
       setError("Please fill all fields correctly.");
@@ -43,41 +58,57 @@ function TransactionForm({
       onSubmit={handleSubmit}
       className="form-grid"
     >
-      <input
-        name="title"
-        value={form.title}
-        onChange={handleChange}
-        placeholder="Title"
-      />
+      <label className="field-label">
+        <span>Title</span>
+        <input
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          placeholder="Expense title"
+          required
+        />
+      </label>
 
-      <select
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-      >
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+      <label className="field-label">
+        <span>Category</span>
+        <select
+          name="category"
+          value={selectedCategory}
+          onChange={handleChange}
+          required
+        >
+          {availableCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <input
-        name="amount"
-        type="number"
-        min="0.01"
-        step="0.01"
-        value={form.amount}
-        onChange={handleChange}
-        placeholder="Amount"
-      />
+      <label className="field-label">
+        <span>Amount</span>
+        <input
+          name="amount"
+          type="number"
+          min="0.01"
+          step="0.01"
+          value={form.amount}
+          onChange={handleChange}
+          placeholder="0.00"
+          required
+        />
+      </label>
 
-      <input
-        name="date"
-        type="date"
-        value={form.date}
-        onChange={handleChange}
-      />
+      <label className="field-label">
+        <span>Date</span>
+        <input
+          name="date"
+          type="date"
+          value={form.date}
+          onChange={handleChange}
+          required
+        />
+      </label>
 
       <button
         type="submit"

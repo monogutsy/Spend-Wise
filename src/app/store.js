@@ -8,8 +8,8 @@ import categoryReducer from "../features/categories/categorySlice";
 import settingsReducer from "../features/settings/settingsSlice";
 import authReducer from "../features/auth/authSlice";
 import {
+  createDebouncedStateSaver,
   loadState,
-  saveState,
 } from "../services/localStorageService";
 
 const preloadedState = loadState();
@@ -27,10 +27,13 @@ export const store = configureStore({
   preloadedState,
 });
 
+const persistState =
+  createDebouncedStateSaver();
+
 store.subscribe(() => {
   const state = store.getState();
 
-  saveState({
+  persistState({
     transactions: state.transactions,
     budgets: state.budgets,
     goals: state.goals,

@@ -6,7 +6,11 @@ export const getExchangeRates = async () => {
       "https://open.er-api.com/v6/latest/PHP"
     );
   } catch (error) {
-    console.error(error);
-    return null;
+    return {
+      rates: null,
+      error:
+        error?.message ||
+        "Failed to fetch exchange rates.",
+    };
   }
 };

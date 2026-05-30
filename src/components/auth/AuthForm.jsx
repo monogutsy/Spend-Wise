@@ -16,6 +16,9 @@ function AuthForm({
 
   function handleSubmit(event) {
     event.preventDefault();
+    if (!firebaseConfigured) {
+      return;
+    }
     onSubmit({ email, password });
   }
 
@@ -71,7 +74,7 @@ function AuthForm({
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={loading}
+            disabled={loading || !firebaseConfigured}
           >
             {loading ? "Please wait..." : submitLabel}
           </button>
@@ -80,7 +83,7 @@ function AuthForm({
             type="button"
             className="btn btn-secondary"
             onClick={onGoogleSignIn}
-            disabled={loading}
+            disabled={loading || !firebaseConfigured}
           >
             Continue with Google
           </button>

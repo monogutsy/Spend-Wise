@@ -13,8 +13,13 @@ function CryptoCard() {
         return;
       }
 
+      if (data?.error) {
+        setError(data.error);
+        return;
+      }
+
       if (!data) {
-        setError("Prices unavailable");
+        setError("Prices unavailable.");
         return;
       }
 

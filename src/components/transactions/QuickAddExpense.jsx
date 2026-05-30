@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import { useSelector } from "react-redux";
 
@@ -8,15 +8,26 @@ import { selectCategories } from "../../features/categories/categorySelectors";
 
 function QuickAddExpense() {
   const categories = useSelector(selectCategories);
+  const availableCategories = useMemo(
+    () =>
+      categories.length > 0
+        ? categories
+        : ["Uncategorized"],
+    [categories]
+  );
   const { createTransaction } = useTransactions();
   const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState({
     title: "",
     amount: "",
-    category: categories[0] || "Food",
+    category: availableCategories[0],
     date: new Date().toISOString().slice(0, 10),
   });
   const [error, setError] = useState("");
+  const selectedCategory =
+    availableCategories.includes(form.category)
+      ? form.category
+      : availableCategories[0];
 
   function openModal() {
     setError("");
@@ -39,7 +50,10 @@ function QuickAddExpense() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const didCreate = createTransaction(form);
+    const didCreate = createTransaction({
+      ...form,
+      category: selectedCategory,
+    });
 
     if (!didCreate) {
       setError("Please provide valid expense details.");
@@ -50,7 +64,7 @@ function QuickAddExpense() {
       ...prev,
       title: "",
       amount: "",
-      category: categories[0] || "Food",
+      category: availableCategories[0],
       date: new Date().toISOString().slice(0, 10),
     }));
     closeModal();
@@ -96,10 +110,10 @@ function QuickAddExpense() {
           />
           <select
             name="category"
-            value={form.category}
+            value={selectedCategory}
             onChange={handleChange}
           >
-            {categories.map((category) => (
+            {availableCategories.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>

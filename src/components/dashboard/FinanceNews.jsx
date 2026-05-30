@@ -4,10 +4,12 @@ import { getFinanceNews } from "../../api/newsApi";
 function FinanceNews() {
   const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     getFinanceNews().then((data) => {
       setArticles(data.articles || []);
+      setError(data.error || "");
       setLoading(false);
     });
   }, []);
@@ -18,6 +20,8 @@ function FinanceNews() {
 
       {loading ? (
         <p className="empty-text">Loading news...</p>
+      ) : error ? (
+        <p className="empty-text">{error}</p>
       ) : articles.length === 0 ? (
         <p className="empty-text">No news available</p>
       ) : (

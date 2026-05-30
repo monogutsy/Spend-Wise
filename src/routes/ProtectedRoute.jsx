@@ -9,6 +9,7 @@ import {
   selectAuthInitialized,
   selectIsAuthenticated,
 } from "../features/auth/authSelectors";
+import { AUTH_REQUIRED } from "../config/appConfig";
 
 function ProtectedRoute() {
   const isAuthenticated = useSelector(
@@ -18,6 +19,10 @@ function ProtectedRoute() {
     selectAuthInitialized
   );
   const location = useLocation();
+
+  if (!AUTH_REQUIRED) {
+    return <Outlet />;
+  }
 
   if (!initialized) {
     return (
